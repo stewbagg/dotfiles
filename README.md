@@ -111,6 +111,13 @@ Personal dotfiles for my WSL Arch Linux setup.
    ssh-keygen -t ed25519 -C "your_email@example.com"
    ```
 
+   Configure Git identity:
+
+   ```bash
+   git config --global user.email "your_email@example.com"
+   git config --global user.name "your_user_name"
+   ```
+
    Add the public key to your Git hosting service.
 
    Test connection:
@@ -128,14 +135,14 @@ Personal dotfiles for my WSL Arch Linux setup.
    mkdir -p ~/dotfiles
    ```
 
-2. Clone the dotfiles repository
+2. **Clone the dotfiles repository**
 
    ```bash
    git clone git@github.com:stewbagg/dotfiles.git ~/dotfiles
    cd ~/dotfiles
    ```
 
-3. Manage the dotfiles with GNU Stow (inside dotfiles directory)
+3. **Manage the dotfiles with GNU Stow**
 
    ```bash
    stow */
