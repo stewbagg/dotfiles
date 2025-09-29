@@ -2,149 +2,160 @@
 
 Personal dotfiles for my WSL Arch Linux setup.
 
-## Initial Setup
+---
 
-1. **Set up root and user accounts**
+## Table of Contents
 
-   Create a root password:
+- [Install Arch Linux WSL](#install-arch-linux-wsl)
+- [Configure WSL user](#configure-wsl-user)
+- [Configure the system](#configure-the-system)
+  - [Locale](#locale)
+  - [Pacman](#pacman)
+  - [Optimize mirrors with reflector](#optimize-mirrors-with-reflector)
+- [Set up Git and SSH](#set-up-git-and-ssh)
+- [Install dotfiles and projects](#install-dotfiles-and-projects)
 
-   ```bash
-   passwd
-   ```
+---
 
-   Create a new user in the `wheel` group and set a password:
+## Install Arch Linux WSL
 
-   ```bash
-   useradd -m -G wheel -s /bin/bash <username>
-   passwd <username>
-   ```
+Install Arch from `PowerShell`:
 
-   Edit `visudo` to allow `wheel` group users to run any command:
+```powershell
+wsl --install archlinux
+```
 
-   ```bash
-   EDITOR=nvim visudo
-   ```
+Open the newly installed WSL instance.
 
-   Uncomment:
+**Set root password:**
 
-   ```
-   %wheel ALL=(ALL) ALL
-   ```
+```bash
+passwd
+```
 
-2. **Set default WSL user**
+**Create a new user in the `wheel` group:**
 
-   Edit `/etc/wsl.conf` and append:
+```bash
+useradd -m -G wheel -s /bin/bash <username>
+passwd <username>
+```
 
-   ```
-   [user]
-   default=<username>
-   ```
+**Install essential packages:**
 
-3. **Restart terminal**  
-   Close WSL and reopen it — you should now log in as the new user.
+```bash
+sudo pacman -Syu neovim openssh git reflector
+```
 
-4. **Set locale**
+**Enable sudo for `wheel` group:**
 
-   Edit `/etc/locale.gen` and uncomment:
+```bash
+EDITOR=nvim visudo
+```
 
-   ```
-   en_US.UTF-8 UTF-8
-   ```
+Uncomment:
 
-   Generate locales:
+```conf
+%wheel ALL=(ALL) ALL
+```
 
-   ```bash
-   locale-gen
-   ```
+---
 
-   Add to `/etc/locale.conf`:
+## Configure WSL user
 
-   ```
-   LANG=en_US.UTF-8
-   ```
+Edit `/etc/wsl.conf` and append:
 
-5. **Configure pacman**
+```conf
+[user]
+default=<username>
+```
 
-   Edit `/etc/pacman.conf` and add:
+Restart WSL -- you should now log in as the new user.
 
-   ```
-   ILoveCandy
-   ```
+---
 
-6. **Install packages**
+## Configure the system
 
-   Use the provided package list:
+### Locale
 
-   ```bash
-   sudo pacman -S - < pkglist.txt
-   ```
+Edit `/etc/locale.gen` and uncomment:
 
-7. **Optimize mirrors with reflector**
+```conf
+en_US.UTF-8 UTF-8
+```
 
-   Edit `/etc/xdg/reflector/reflector.conf` with recommended settings:
+Generate locales:
 
-   ```
-   # Save the mirrorlist
-   --save /etc/pacman.d/mirrorlist
+```bash
+locale-gen
+```
 
-   # Use HTTPS protocol
-   --protocol https
+Add to `/etc/locale.conf`:
 
-   # Select country (adjust as needed)
-   --country US
+```conf
+LANG=en_US.UTF-8
+```
 
-   # Use the 10 most recently synchronized mirrors
-   --latest 10
+### Pacman
 
-   # Sort by download rate
-   --sort rate
+Edit `/etc/pacman.conf` and enable:
 
-   # Pick only the 5 fastest mirrors
-   --fastest 5
-   ```
+```conf
+Color
+ILoveCandy
+```
 
-8. **Set up Git for remote development**
+### Optimize mirrors with reflector
 
-   Generate SSH key:
+Edit `/etc/xdg/reflector/reflector.conf` with recommended settings:
 
-   ```bash
-   ssh-keygen -t ed25519 -C "your_email@example.com"
-   ```
+```conf
+--save /etc/pacman.d/mirrorlist
+--protocol https
+--country US
+--latest 10
+--sort rate
+--fastest 5
+```
 
-   Configure Git:
+Run `sudo pacman -Syu` to update package mirrors.
 
-   ```bash
-   git config --global user.email "your_email@example.com"
-   git config --global user.name "your_user_name"
-   git config --global push.autoSetupRemote true
-   ```
+## Set up Git and SSH
 
-   Add the public key to your Git hosting service.
+Generate SSH key:
 
-   Test connection:
+```bash
+ssh-keygen -t ed25519 -C "your_email@example.com"
+eval "$(ssh-agent -s)"
+ssh-add ~/.ssh/id_ed25519
+```
 
-   ```bash
-   ssh -T git@github.com
-   ```
+Show public key (add to Git hosting service):
 
-## Organizing Projects and Dotfiles
+```bash
+cat ~/.ssh/id_ed25519.pub
+```
 
-1. **Create a development folder structure**
+Configure Git:
 
-   ```bash
-   mkdir -p ~/projects
-   mkdir -p ~/dotfiles
-   ```
+```bash
+git config --global user.email "your_email@example.com"
+git config --global user.name "your_user_name"
+git config --global push.autoSetupRemote true
+```
 
-2. **Clone the dotfiles repository**
+## Install dotfiles and setup projects directory
 
-   ```bash
-   git clone git@github.com:stewbagg/dotfiles.git ~/dotfiles
-   cd ~/dotfiles
-   ```
+Use the Git repo and package list:
 
-3. **Manage the dotfiles with GNU Stow**
+```bash
+cd ~
+rm -rf .bashrc
+mkdir projects
+git clone git@github.com:stewbagg/dotfiles.git
+sudo pacman -S --needed - < ~/dotfiles/pacman/pkglist.txt
+stow */
+```
 
-   ```bash
-   stow */
-   ```
+## Post-install
+
+Welcome to a fully-functioning development environment inside of Windows using WSL!
