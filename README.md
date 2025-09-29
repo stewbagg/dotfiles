@@ -111,11 +111,12 @@ Personal dotfiles for my WSL Arch Linux setup.
    ssh-keygen -t ed25519 -C "your_email@example.com"
    ```
 
-   Configure Git identity:
+   Configure Git:
 
    ```bash
    git config --global user.email "your_email@example.com"
    git config --global user.name "your_user_name"
+   git config --global push.autoSetupRemote true
    ```
 
    Add the public key to your Git hosting service.

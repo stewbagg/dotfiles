@@ -5,6 +5,7 @@ fd
 fzf
 gcc
 git
+less
 neovim
 npm
 openssh
