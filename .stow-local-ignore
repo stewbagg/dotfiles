@@ -1,0 +1,11 @@
+# Comments and blank lines are allowed.
+
+assets
+
+\.git
+\.gitignore
+\.gitmodules
+
+^/README.*
+^/LICENSE.*
+^/COPYING

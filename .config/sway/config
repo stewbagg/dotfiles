@@ -1,0 +1,114 @@
+set $mod Mod4
+
+set $left h
+set $down j
+set $up k
+set $right l
+
+set $audio foot -e wiremix
+set $browser brave
+set $launcher tofi-run | xargs swaymsg exec --
+set $monitor foot -e btop
+set $screenshot grim -g "$(slurp)" - | swappy -f -
+set $terminal foot
+
+output DP-1 res 1920x1080 pos 1920 0
+
+exec swayidle -w before-sleep 'swaylock -f -c 000000'
+
+input type:keyboard {
+	repeat_delay 200
+		repeat_rate 60
+}
+
+input type:touchpad {
+	tap enabled
+	natural_scroll enabled
+}
+
+seat seat0 xcursor_theme Hackneyed
+
+bindsym $mod+a exec $audio
+bindsym $mod+b exec $browser
+bindsym $mod+Space exec $launcher
+bindsym $mod+r exec $monitor
+bindsym $mod+t exec $terminal
+bindsym $mod+q kill
+bindsym $mod+Shift+c reload
+bindsym Print exec $screenshot
+
+bindsym $mod+$left focus left
+bindsym $mod+$down focus down
+bindsym $mod+$up focus up
+bindsym $mod+$right focus right
+bindsym $mod+Left focus left
+bindsym $mod+Down focus down
+bindsym $mod+Up focus up
+bindsym $mod+Right focus right
+
+bindsym $mod+Shift+$left move left
+bindsym $mod+Shift+$down move down
+bindsym $mod+Shift+$up move up
+bindsym $mod+Shift+$right move right
+bindsym $mod+Shift+Left move left
+bindsym $mod+Shift+Down move down
+bindsym $mod+Shift+Up move up
+bindsym $mod+Shift+Right move right
+
+bindsym $mod+1 workspace number 1
+bindsym $mod+2 workspace number 2
+bindsym $mod+3 workspace number 3
+bindsym $mod+4 workspace number 4
+bindsym $mod+5 workspace number 5
+
+bindsym $mod+Shift+1 move container to workspace number 1
+bindsym $mod+Shift+2 move container to workspace number 2
+bindsym $mod+Shift+3 move container to workspace number 3
+bindsym $mod+Shift+4 move container to workspace number 4
+bindsym $mod+Shift+5 move container to workspace number 5
+
+mode "resize" {
+	bindsym $left resize shrink width 10px
+		bindsym $down resize grow height 10px
+		bindsym $up resize shrink height 10px
+		bindsym $right resize grow width 10px
+		bindsym Left resize shrink width 10px
+		bindsym Down resize grow height 10px
+		bindsym Up resize shrink height 10px
+		bindsym Right resize grow width 10px
+
+		bindsym Return mode "default"
+		bindsym Escape mode "default"
+}
+bindsym $mod+Shift+r mode "resize"
+
+bindsym --locked XF86AudioMute exec pactl set-sink-mute \@DEFAULT_SINK@ toggle
+bindsym --locked XF86AudioLowerVolume exec pactl set-sink-volume \@DEFAULT_SINK@ -10%
+bindsym --locked XF86AudioRaiseVolume exec pactl set-sink-volume \@DEFAULT_SINK@ +10%
+bindsym --locked XF86AudioMicMute exec pactl set-source-mute \@DEFAULT_SOURCE@ toggle
+
+bindsym --locked XF86MonBrightnessDown exec brightnessctl set 10%-
+bindsym --locked XF86MonBrightnessUp exec brightnessctl set 10%+
+
+set $bd #6c6c6c
+set $bg #000000
+set $fg #dadada
+
+bar {
+	font JetBrainsMono Nerd Font
+		position top
+		status_command while date +'%I:%M:%S %p'; do sleep 1; done
+		colors {
+			background $bg
+				statusline $fg
+				focused_workspace $fg $fg $bg
+				inactive_workspace $bg $bg $bd
+		}
+}
+
+client.focused	 $bg $bg $bg $bg
+client.unfocused $bg $bg $bg $bg
+
+default_border pixel
+
+exec mako
