@@ -9,12 +9,11 @@ return {
 		local formatting = null_ls.builtins.formatting
 
 		require("mason-null-ls").setup({
-			ensure_installed = { "clang_format", "prettier", "shfmt", "stylua" },
+			ensure_installed = { "prettier", "shfmt", "stylua" },
 			automatic_installation = true,
 		})
 
 		local sources = {
-			formatting.clang_format,
 			formatting.prettier,
 			formatting.shfmt,
 			formatting.stylua,
